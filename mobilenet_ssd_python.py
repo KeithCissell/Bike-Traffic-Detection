@@ -1,8 +1,11 @@
 #Import the neccesary libraries
 import numpy as np
 import argparse
-import cv2 
+import cv2
+from pprint import pprint
+from overlap import is_overlap
 
+cycles_and_humans = {'bicycle':[], 'person':[]}
 # construct the argument parse 
 parser = argparse.ArgumentParser(
     description='Script to run MobileNet-SSD object detection network ')
@@ -96,6 +99,12 @@ while True:
 
                 print(label) #print class and confidence
 
+    pprint(cycles_and_humans)
+    for bicycle in cycles_and_humans['bicycle']:
+        print(bicycle)
+        for person in cycles_and_humans['person']:
+            print(person)
+            is_overlap(bicycle, person)
     cv2.namedWindow("frame", cv2.WINDOW_NORMAL)
     cv2.imshow("frame", frame)
     if cv2.waitKey(1) >= 0:  # Break with ESC 
