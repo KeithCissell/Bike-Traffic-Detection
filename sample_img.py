@@ -9,7 +9,7 @@ cycles_and_humans = {'bicycle':[], 'person':[]}
 # construct the argument parse 
 parser = argparse.ArgumentParser(
     description='Script to run MobileNet-SSD object detection network')
-parser.add_argument("--image", default= "cyclist.jpg", help="path to video file. If empty, camera's stream will be used")
+parser.add_argument("--image", default= "cyclist_4.jpg", help="path to video file. If empty, camera's stream will be used")
 parser.add_argument("--prototxt", default="MobileNetSSD_deploy.prototxt",
                                   help='Path to text network file: '
                                        'MobileNetSSD_deploy.prototxt for Caffe model'
@@ -73,12 +73,16 @@ for i in range(detections.shape[2]):
         yLeftBottom_ = int(heightFactor* yLeftBottom)
         xRightTop_   = int(widthFactor * xRightTop)
         yRightTop_   = int(heightFactor * yRightTop)
-        # Draw location of object  
+        # Draw location of object
+        if classNames[class_id]=='person':
+            color = (0, 255, 0)
+        elif classNames[class_id]=='bicycle':
+            color = (0,0,255)
         cv2.rectangle(frame_resized, (xLeftBottom, yLeftBottom), (xRightTop, yRightTop),
-                      (0, 255, 0))
+                      color)
 
         cv2.rectangle(frame_copy, (xLeftBottom_, yLeftBottom_), (xRightTop_, yRightTop_),
-                      (0, 255, 0),-1)
+                      color,-1)
 opacity = 0.3
 cv2.addWeighted(frame_copy, opacity, frame, 1 - opacity, 0, frame)
 
@@ -108,18 +112,21 @@ for i in range(detections.shape[2]):
             labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_TRIPLEX, 0.8, 1)
 
             yLeftBottom_ = max(yLeftBottom_, labelSize[1])
-            cv2.rectangle(frame, (xLeftBottom_, yLeftBottom_ - labelSize[1]),
+            '''cv2.rectangle(frame, (xLeftBottom_, yLeftBottom_ - labelSize[1]),
                                  (xLeftBottom_ + labelSize[0], yLeftBottom_ + baseLine),
                                  (255, 255, 255), cv2.FILLED)
             cv2.putText(frame, label, (xLeftBottom_, yLeftBottom_),
-                        cv2.FONT_HERSHEY_TRIPLEX, 0.8, (0, 0, 0))
+                        cv2.FONT_HERSHEY_TRIPLEX, 0.8, (0, 0, 0))'''
             print (label) #print class and confidence 
 pprint(cycles_and_humans)
 for bicycle in cycles_and_humans['bicycle']:
     print(bicycle)
     for person in cycles_and_humans['person']:
         print(person)
-        is_overlap(bicycle, person)
+        pt1, pt2 = is_overlap(bicycle, person)
+        cv2.rectangle(frame_copy2, pt1, pt2, (255,255,255), -1)
+        opacity = 0.5
+        cv2.addWeighted(frame_copy2, opacity, frame, 1 - opacity, 0, frame)
 cv2.namedWindow("frame", cv2.WINDOW_NORMAL)
 cv2.imshow("frame", frame)
 cv2.waitKey(0)

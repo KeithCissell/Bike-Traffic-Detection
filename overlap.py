@@ -18,26 +18,36 @@ def is_overlap(rec_a_coord, rec_b_coord):
     lef_b = xleft_bottom_b
     rig_b = xright_top_b
 
+    t_y = 0
+    b_y = 0
+    l_x = 0
+    r_x = 0
+
     #a ends beyond b on both sides
     if (top_a>=top_b and bot_a<bot_b):
         print('1')
         b_overlapped = 1.0
         a_overlapped = (top_b-bot_b)/(top_a-bot_a)
+        t_y = top_b
+        b_y = bot_b
     #a top beyond b but ends before bot b
     elif (top_a>=top_b and bot_a>=bot_b):
         print('2')
         b_overlapped = (top_b-bot_a)/(top_b-bot_b)
         a_overlapped = (top_b-bot_a)/(top_a-bot_a)
+        t_y, b_y = top_b, bot_a
     #a ends within b
     elif (top_b>=top_a and bot_b<bot_a):
         print('3')
         b_overlapped = (top_a-bot_a)/(top_b-bot_b)
         a_overlapped = 1.0
+        t_y, b_y = top_a, bot_a
     #a bots beyond b but tops within b
     elif (top_b>=top_a and bot_a<bot_b):
         print('4')
         b_overlapped = (top_b-bot_a)/(top_b-bot_b)
         a_overlapped = (top_b-bot_a)/(top_a-bot_a)
+        t_y, b_y = top_a, bot_b
 
     print(b_overlapped, a_overlapped)
 
@@ -46,20 +56,26 @@ def is_overlap(rec_a_coord, rec_b_coord):
         print('5')
         q_overlapped = 1.0
         p_overlapped = (rig_b-lef_b)/(rig_a-lef_a)
+        l_x, r_x = lef_b, rig_b
     #a right beyond b but ends before left b
     elif (rig_a>=rig_b and lef_a>=lef_b):
         print('6')
         q_overlapped = (rig_b-lef_a)/(rig_b-lef_b)
         p_overlapped = (rig_b-lef_a)/(rig_a-lef_a)
+        l_x, r_x = lef_a, rig_b
     #a ends within b
     elif (rig_b>=rig_a and lef_b<lef_a):
         print('7')
         q_overlapped = (rig_a-lef_a)/(rig_b-lef_b)
         p_overlapped = 1.0
+        l_x, r_x = lef_a, rig_a
     #a lefts beyond b but rights within b
     elif (rig_b>=rig_a and lef_a<lef_b):
         print('8')
         q_overlapped = (rig_b-lef_a)/(rig_b-lef_b)
         p_overlapped = (rig_b-lef_a)/(rig_a-lef_a)
+        l_x, r_x = lef_b, rig_a
 
     print(q_overlapped, p_overlapped)
+    print((r_x, b_y), (l_x, t_y))
+    return (r_x, b_y), (l_x, t_y)
